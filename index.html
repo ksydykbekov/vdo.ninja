@@ -2714,24 +2714,54 @@
 			// Configure STUN and TURN servers for the session.
 			session.stunServers = [{ urls: ["stun:stun.l.google.com:19302", "stun:stun.cloudflare.com:3478"] }];
 
+			if (window.location.hostname === 'vdo.socialstream.ninja') {
+				session.wss = "wss://wss.socialstream.ninja:443"
+			} else if (window.location.hostname === 'test.socialstream.ninja') {
+				session.wss = "wss://wss.socialstream.ninja:443"
+			}
+
+			///////////////  ------  Custom basic TURN SETUP SECTION STARTS Here --------
+			session.configuration = {         // uncomment to disable the default usage of the vdo.ninja turn servers.
+				iceServers: session.stunServers,
+				sdpSemantics: session.sdpSemantics
+			};
+			var turn = {}; // Just an example entry for a basic TURN server
+			turn.username = "username";
+			turn.credential = "password";
+			turn.urls = ["turn:195.179.230.0:3478"];
+			session.configuration.iceServers.push(turn);
+
+			// turn = {}; // second turn server example entry.
+			// turn.username = "steve";
+			// turn.credential = "justtesting";
+			// turn.urls = ["turn:turn2.obs.ninja:443"];
+			// session.configuration.iceServers.push(turn);
+			/////////////// ------------ END OF TURN SETUP SECTION -------
+
 			// Use your WebSocket server for signaling.
 			session.wss = "wss://webrtc.microret.com/webrtc";
 
-			// Custom TURN server configuration.
-			session.configuration = {
-				iceServers: [
-					...session.stunServers,
-					{
-						urls: ["turn:195.179.230.0:3478"],
-						username: "username",
-						credential: "password"
-					}
-				],
-				sdpSemantics: "unified-plan", // Ensuring compatibility with modern browsers.
-				iceTransportPolicy: "all" // Use both TURN and STUN.
-			};
+			session.customWSS = true;
 
-			session.configuration.iceTransportPolicy = "relay"; // Uncomment if you wish to force the use of the TURN server for added privacy.
+
+			// Custom TURN server configuration.
+			// session.configuration = {
+			// 	iceServers: [
+			// 		...session.stunServers,
+			// 		{
+			// 			urls: ["turn:195.179.230.0:3478"],
+			// 			username: "username",
+			// 			credential: "password"
+			// 		}
+			// 	],
+			// 	sdpSemantics: "unified-plan", // Ensuring compatibility with modern browsers.
+			// 	iceTransportPolicy: "all" // Use both TURN and STUN.
+			// };
+
+			// session.configuration.iceTransportPolicy = "relay"; // Uncomment if you wish to force the use of the TURN server for added privacy.
+
+
+
 		</script>
 		<script type="text/javascript" crossorigin="anonymous" id="lib-js" src="./lib.js?ver=1217"></script>
 		<script type="text/javascript" crossorigin="anonymous" id="main-js" src="./main.js?ver=899"></script>
